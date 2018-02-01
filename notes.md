@@ -1,0 +1,9 @@
+ <blockquote>
+ Nope... Por exemplo. Na arquitetura Intel a instrução MOV pode gastar de 0 (zero!) a 5 ciclos, dependendo da instrução... E ainda existem "efeitos colaterais" que devem ser levados em conta (cache misses, page faults, branch prediction, ...).
+
+Instruções como MOV EAX,EBX podem gastar de 0 a 2 ciclos (0 se estiver emparelhada com outra instrução, 1 se não estiver ou 2 se EBX tiver sido alterado 1 instrução antes... Tipo: MOV EBX,3/MOV EAX,EBX. Já instruções como MOV EAX,[EBX+4] tende a gastar 1 ciclo (por causa do cálculo do endereço efetivo no ponteiro dentro dos colchetes)... mas se o offset for maior que 2047, como em MOV EAX,[EBX+3000], gasta 1 clock EXTRA.... Se usar índices, como em MOV EAX,[EBX+ESI+3000] gasta ainda mais 1 ciclo... se usar fator de multiplicação no índice, pode gastar ainda mais 1 (como em MOV EAX,[EBX+EDX*4+3000]...
+
+Existem ainda os prefixos que mudam o comportamento default da instrução. No modo i386 podemos escrever: MOV EAX,ES:[EBX+EDX+3000]... Esse prefixo ES: gasta MAIS um ciclo... Mas, ainda, podemos ter prefixox 0x66 ou 0x67 (mais 1 ciclo cada)...
+
+Se o endereço linear calculado em EBX+EDX+3000 apontar para uma entrada com página não-presente temos page fault, que pode gastar milhares de ciclos antes que a instrução possa ser, finalmente, executada...
+ </blockquote>
